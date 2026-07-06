@@ -1,0 +1,13 @@
+{
+  "name": "@devcomply/ai-engine",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@langchain/core": "^0.2.20",
+    "@langchain/groq": "^0.0.16",
+    "langchain": "^0.2.8",
+    "zod": "^3.23.8"
+  }
+}

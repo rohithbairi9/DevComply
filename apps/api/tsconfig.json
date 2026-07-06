@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node", 
+    "target": "ES2021",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "noEmit": false,
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "@devcomply/db": ["../../packages/db/src/index.ts"],
+      "@devcomply/validators": ["../../packages/validators/src/index.ts"],
+      "@devcomply/ai-engine": ["../../packages/ai-engine/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test"]
+}

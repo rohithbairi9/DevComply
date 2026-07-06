@@ -1,0 +1,148 @@
+// DevComply Database Schema
+// Engine: PostgreSQL
+// Notes: Uses UUIDs for all primary keys to prevent enumeration attacks and ensure distributed scalability.
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [pgvector(map: "vector")]
+}
+
+// Enumerations
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum ScanStatus {
+  PENDING
+  ANALYZING
+  COMPLETED
+  FAILED
+}
+
+enum FindingSeverity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  INFO
+}
+
+enum FindingStatus {
+  OPEN
+  IGNORED
+  RESOLVED
+}
+
+// Core Models
+model User {
+  id           String             @id @default(uuid()) @db.Uuid
+  email        String             @unique
+  githubId     Int                @unique
+  name         String?
+  avatarUrl    String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  deletedAt    DateTime?          // Soft delete capability for enterprise compliance
+
+  memberships  UserOrganization[]
+
+  @@map("users")
+}
+
+model Organization {
+  id                 String             @id @default(uuid()) @db.Uuid
+  name               String
+  githubOrgId        Int                @unique
+  githubOrgLogin     String
+  encryptedGithubToken String           // AES-256-GCM encrypted token
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  deletedAt          DateTime?
+
+  memberships        UserOrganization[]
+  repositories       Repository[]
+
+  @@map("organizations")
+}
+
+model UserOrganization {
+  userId            String         @db.Uuid
+  organizationId    String         @db.Uuid
+  role              Role           @default(MEMBER)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization      Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@id([userId, organizationId]) // Composite Primary Key
+  @@index([organizationId])
+  @@map("user_organizations")
+}
+
+model Repository {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  githubRepoId   Int          @unique
+  name           String
+  fullName       String       // e.g., "owner/repo"
+  webhookId      Int?
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  scans          Scan[]
+
+  @@index([organizationId])
+  @@map("repositories")
+}
+
+model Scan {
+  id             String       @id @default(uuid()) @db.Uuid
+  repositoryId   String       @db.Uuid
+  prNumber       Int
+  commitSha      String
+  status         ScanStatus   @default(PENDING)
+  triggeredBy    String       // GitHub username of the PR author
+  errorMessage   String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  repository     Repository   @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  findings       Finding[]
+
+  @@index([repositoryId, status])
+  @@index([createdAt])
+  @@map("scans")
+}
+
+model Finding {
+  id               String           @id @default(uuid()) @db.Uuid
+  scanId           String           @db.Uuid
+  filePath         String
+  lineNumber       Int
+  severity         FindingSeverity
+  vulnerabilityType String          // e.g., "SQL_INJECTION", "HARDCODED_SECRET"
+  aiExplanation    String           @db.Text
+  suggestedFix     String           @db.Text
+  githubCommentId  Int?
+  status           FindingStatus    @default(OPEN)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  scan             Scan             @relation(fields: [scanId], references: [id], onDelete: Cascade)
+
+  @@index([scanId])
+  @@index([severity])
+  @@map("findings")
+}

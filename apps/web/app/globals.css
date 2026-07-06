@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%; /* Very light slate */
+    --foreground: 222 47% 11%; /* Dark slate for text */
+    --card: 0 0% 100%; /* Pure white cards */
+    --card-foreground: 222 47% 11%;
+    --primary: 262 83% 58%; /* Vibrant Indigo */
+    --primary-foreground: 0 0% 100%;
+    --muted: 210 40% 96.1%; /* Light grey backgrounds */
+    --muted-foreground: 215 16% 47%; /* Medium grey text */
+    --border: 214 32% 91%; /* Subtle grey borders */
+    --radius: 0.75rem;
+  }
+}
+
+body {
+  @apply bg-background text-foreground;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  /* Premium subtle indigo glow at the top */
+  background-image: radial-gradient(circle at 50% -20%, hsl(262 83% 90% / 0.4) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+/* Custom Scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.5);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
