@@ -68,7 +68,7 @@ export default function OnboardingPage() {
               const token = input.value;
               if (!token) return alert('Please enter a token');
               try {
-                const res = await fetch(`${process.env.BACKEND_URL}/api/github/repos`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/github/repos`, {
                   headers: { 'x-github-token': token },
                   credentials: 'include' // <-- ADDED THIS LINE
                 });
