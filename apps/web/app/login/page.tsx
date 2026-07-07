@@ -38,7 +38,8 @@ import Link from 'next/link';
 import { ShieldCheck } from 'lucide-react';
 
 export default function LoginPage() {
-  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&scope=user:email read:org repo`;
+  // Link directly to the backend OAuth callback!
+  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&scope=user:email read:org repo&redirect_uri=https://devcomply.onrender.com/api/auth/github/callback`;
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-6 relative">
