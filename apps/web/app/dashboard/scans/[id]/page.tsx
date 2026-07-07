@@ -30,7 +30,7 @@ export default async function ScanDetailPage({ params }: { params: { id: string 
 
   let scan: ScanDetails | null = null;
   try {
-    const res = await fetch(`http://localhost:8080/api/scans/${params.id}`, {
+    const res = await fetch(`${process.env.BACKEND_URL}/api/scans/${params.id}`, {
       headers: { Cookie: `token=${token}` },
       cache: 'no-store',
     });

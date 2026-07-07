@@ -20,7 +20,7 @@ export default async function ScansPage() {
 
   let scans: Scan[] = [];
   try {
-    const res = await fetch('http://localhost:8080/api/scans', {
+    const res = await fetch(`${process.env.BACKEND_URL}/api/scans`, {
       headers: { Cookie: `token=${token}` },
       cache: 'no-store',
     });

@@ -17,7 +17,7 @@ export default async function SettingsPage() {
 
   let repos: Repo[] = [];
   try {
-    const res = await fetch('http://localhost:8080/api/repos', {
+    const res = await fetch(`${process.env.BACKEND_URL}/api/repos`, {
       headers: { Cookie: `token=${token}` },
       cache: 'no-store',
     });

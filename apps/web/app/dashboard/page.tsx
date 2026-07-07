@@ -25,8 +25,8 @@ export default async function DashboardOverview() {
   
   try {
     const [scansRes, reposRes] = await Promise.all([
-      fetch('http://localhost:8080/api/scans', { headers: { Cookie: `token=${token}` }, cache: 'no-store' }),
-      fetch('http://localhost:8080/api/repos', { headers: { Cookie: `token=${token}` }, cache: 'no-store' })
+      fetch(`${process.env.BACKEND_URL}/api/scans`, { headers: { Cookie: `token=${token}` }, cache: 'no-store' }),
+      fetch(`${process.env.BACKEND_URL}/api/repos`, { headers: { Cookie: `token=${token}` }, cache: 'no-store' })
     ]);
     
     if (scansRes.ok) scans = await scansRes.json();

@@ -34,7 +34,7 @@ export default function OnboardingPage() {
 
   const handleConnect = async (repo: Repo) => {
     // Call backend to save repo
-    const res = await fetch('http://localhost:8080/api/repos/connect', {
+    const res = await fetch(`${process.env.BACKEND_URL}/api/repos/connect`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -68,7 +68,7 @@ export default function OnboardingPage() {
               const token = input.value;
               if (!token) return alert('Please enter a token');
               try {
-                const res = await fetch('http://localhost:8080/api/github/repos', {
+                const res = await fetch(`${process.env.BACKEND_URL}/api/github/repos`, {
                   headers: { 'x-github-token': token },
                   credentials: 'include' // <-- ADDED THIS LINE
                 });
