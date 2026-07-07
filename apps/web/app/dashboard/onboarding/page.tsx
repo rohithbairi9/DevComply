@@ -34,7 +34,7 @@ export default function OnboardingPage() {
 
   const handleConnect = async (repo: Repo) => {
     // Call backend to save repo
-    const res = await fetch(`${process.env.BACKEND_URL}/api/repos/connect`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/repos/connect`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
