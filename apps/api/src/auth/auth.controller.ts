@@ -18,8 +18,8 @@ export class AuthController {
     // Set HttpOnly cookie on the Backend domain (Render)
     res.cookie('token', jwtToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax', // 'lax' is secure and works for top-level redirects
+      secure: process.env.NODE_ENV === 'production', // Must be true
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Must be 'none' in production
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
 
