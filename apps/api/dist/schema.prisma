@@ -43,14 +43,15 @@ enum FindingStatus {
 
 // Core Models
 model User {
-  id        String    @id @default(uuid()) @db.Uuid
-  email     String    @unique
-  githubId  Int       @unique
-  name      String?
-  avatarUrl String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime? // Soft delete capability for enterprise compliance
+  id                   String    @id @default(uuid()) @db.Uuid
+  email                String    @unique
+  githubId             Int       @unique
+  name                 String?
+  avatarUrl            String?
+  encryptedGithubToken String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  deletedAt            DateTime?
 
   memberships UserOrganization[]
 

@@ -48,9 +48,10 @@ model User {
   githubId     Int                @unique
   name         String?
   avatarUrl    String?
+  encryptedGithubToken String?
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
-  deletedAt    DateTime?          // Soft delete capability for enterprise compliance
+  deletedAt    DateTime?
 
   memberships  UserOrganization[]
 

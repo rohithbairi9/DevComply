@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { FindingSeverity } from '@devcomply/db'; // <-- Add this line
+import { decrypt } from '../common/crypto.util';
 
 interface FileChange {
   filename: string;
@@ -25,10 +26,39 @@ export class ScansService {
   async fetchAndSaveDiff(repoFullName: string, prNumber: number, commitSha: string) {
     this.logger.log(`Fetching diff for ${repoFullName} PR #${prNumber}`);
 
+    // 1. Find the repository and the organization admin's token
+    const repository = await this.prisma.repository.findFirst({
+      where: { fullName: repoFullName, deletedAt: null },
+      include: {
+        organization: {
+          include: {
+            memberships: {
+              where: { role: 'ADMIN' },
+              include: { user: true },
+              take: 1,
+            },
+          },
+        },
+      },
+    });
+
+    if (!repository || repository.organization.memberships.length === 0) {
+      throw new Error(`No admin user found for repository ${repoFullName}`);
+    }
+
+    const adminUser = repository.organization.memberships[0].user;
+    if (!adminUser.encryptedGithubToken) {
+      throw new Error(`Admin user has not connected a GitHub token`);
+    }
+
+    // 2. Decrypt the token
+    const githubToken = decrypt(adminUser.encryptedGithubToken);
+
+    // 3. Fetch the PR data using the user's token
     const response = await fetch(`https://api.github.com/repos/${repoFullName}/pulls/${prNumber}`, {
       headers: {
         Accept: 'application/vnd.github.v3.diff',
-        Authorization: `Bearer ${process.env.GITHUB_PAT_FOR_TESTING}`,
+        Authorization: `Bearer ${githubToken}`, // <-- USE DECRYPTED TOKEN
       },
     });
 
@@ -130,10 +160,31 @@ export class ScansService {
 
   private async postPrComment(repoFullName: string, prNumber: number, body: string) {
     this.logger.log(`Posting comment to PR #${prNumber} on ${repoFullName}`);
+    
+    // Look up the admin token for this repo
+    const repository = await this.prisma.repository.findFirst({
+      where: { fullName: repoFullName },
+      include: {
+        organization: {
+          include: {
+            memberships: { where: { role: 'ADMIN' }, include: { user: true }, take: 1 },
+          },
+        },
+      },
+    });
+
+    const adminUser = repository?.organization.memberships[0]?.user;
+    if (!adminUser?.encryptedGithubToken) {
+      this.logger.error('Failed to post PR comment: No admin token found');
+      return;
+    }
+
+    const githubToken = decrypt(adminUser.encryptedGithubToken);
+
     const response = await fetch(`https://api.github.com/repos/${repoFullName}/issues/${prNumber}/comments`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.GITHUB_PAT_FOR_TESTING}`,
+        Authorization: `Bearer ${githubToken}`,
         Accept: 'application/vnd.github+json',
         'X-GitHub-Api-Version': '2022-11-28',
       },

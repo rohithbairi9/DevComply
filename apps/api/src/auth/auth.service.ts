@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
+import { encrypt } from '../common/crypto.util';
 
 interface GitHubUserResponse {
   id: number;
@@ -85,15 +86,17 @@ export class AuthService {
     const user = await this.prisma.user.upsert({
       where: { githubId: githubUser.id },
       update: {
-        email: userEmail || `user${githubUser.id}@devcomply.local`, // Update with real email if found
+        email: userEmail || `user${githubUser.id}@devcomply.local`,
         name: githubUser.name,
         avatarUrl: githubUser.avatar_url,
+        encryptedGithubToken: encrypt(tokenData.access_token), // <-- ADD THIS
       },
       create: {
         githubId: githubUser.id,
         email: userEmail || `user${githubUser.id}@devcomply.local`,
         name: githubUser.name,
         avatarUrl: githubUser.avatar_url,
+        encryptedGithubToken: encrypt(tokenData.access_token), // <-- ADD THIS
       },
     });
 

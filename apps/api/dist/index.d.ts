@@ -1525,6 +1525,7 @@ export namespace Prisma {
     githubId: number | null
     name: string | null
     avatarUrl: string | null
+    encryptedGithubToken: string | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -1536,6 +1537,7 @@ export namespace Prisma {
     githubId: number | null
     name: string | null
     avatarUrl: string | null
+    encryptedGithubToken: string | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -1547,6 +1549,7 @@ export namespace Prisma {
     githubId: number
     name: number
     avatarUrl: number
+    encryptedGithubToken: number
     createdAt: number
     updatedAt: number
     deletedAt: number
@@ -1568,6 +1571,7 @@ export namespace Prisma {
     githubId?: true
     name?: true
     avatarUrl?: true
+    encryptedGithubToken?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -1579,6 +1583,7 @@ export namespace Prisma {
     githubId?: true
     name?: true
     avatarUrl?: true
+    encryptedGithubToken?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -1590,6 +1595,7 @@ export namespace Prisma {
     githubId?: true
     name?: true
     avatarUrl?: true
+    encryptedGithubToken?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -1688,6 +1694,7 @@ export namespace Prisma {
     githubId: number
     name: string | null
     avatarUrl: string | null
+    encryptedGithubToken: string | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -1718,6 +1725,7 @@ export namespace Prisma {
     githubId?: boolean
     name?: boolean
     avatarUrl?: boolean
+    encryptedGithubToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -1731,6 +1739,7 @@ export namespace Prisma {
     githubId?: boolean
     name?: boolean
     avatarUrl?: boolean
+    encryptedGithubToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -1742,6 +1751,7 @@ export namespace Prisma {
     githubId?: boolean
     name?: boolean
     avatarUrl?: boolean
+    encryptedGithubToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -1764,6 +1774,7 @@ export namespace Prisma {
       githubId: number
       name: string | null
       avatarUrl: string | null
+      encryptedGithubToken: string | null
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
@@ -2166,6 +2177,7 @@ export namespace Prisma {
     readonly githubId: FieldRef<"User", 'Int'>
     readonly name: FieldRef<"User", 'String'>
     readonly avatarUrl: FieldRef<"User", 'String'>
+    readonly encryptedGithubToken: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly deletedAt: FieldRef<"User", 'DateTime'>
@@ -7671,6 +7683,7 @@ export namespace Prisma {
     githubId: 'githubId',
     name: 'name',
     avatarUrl: 'avatarUrl',
+    encryptedGithubToken: 'encryptedGithubToken',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt'
@@ -7913,6 +7926,7 @@ export namespace Prisma {
     githubId?: IntFilter<"User"> | number
     name?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
+    encryptedGithubToken?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -7925,6 +7939,7 @@ export namespace Prisma {
     githubId?: SortOrder
     name?: SortOrderInput | SortOrder
     avatarUrl?: SortOrderInput | SortOrder
+    encryptedGithubToken?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -7940,6 +7955,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
+    encryptedGithubToken?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -7952,6 +7968,7 @@ export namespace Prisma {
     githubId?: SortOrder
     name?: SortOrderInput | SortOrder
     avatarUrl?: SortOrderInput | SortOrder
+    encryptedGithubToken?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -7971,6 +7988,7 @@ export namespace Prisma {
     githubId?: IntWithAggregatesFilter<"User"> | number
     name?: StringNullableWithAggregatesFilter<"User"> | string | null
     avatarUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    encryptedGithubToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -8373,6 +8391,7 @@ export namespace Prisma {
     githubId: number
     name?: string | null
     avatarUrl?: string | null
+    encryptedGithubToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -8385,6 +8404,7 @@ export namespace Prisma {
     githubId: number
     name?: string | null
     avatarUrl?: string | null
+    encryptedGithubToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -8397,6 +8417,7 @@ export namespace Prisma {
     githubId?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptedGithubToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8409,6 +8430,7 @@ export namespace Prisma {
     githubId?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptedGithubToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8421,6 +8443,7 @@ export namespace Prisma {
     githubId: number
     name?: string | null
     avatarUrl?: string | null
+    encryptedGithubToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -8432,6 +8455,7 @@ export namespace Prisma {
     githubId?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptedGithubToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8443,6 +8467,7 @@ export namespace Prisma {
     githubId?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptedGithubToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8968,6 +8993,7 @@ export namespace Prisma {
     githubId?: SortOrder
     name?: SortOrder
     avatarUrl?: SortOrder
+    encryptedGithubToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -8983,6 +9009,7 @@ export namespace Prisma {
     githubId?: SortOrder
     name?: SortOrder
     avatarUrl?: SortOrder
+    encryptedGithubToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -8994,6 +9021,7 @@ export namespace Prisma {
     githubId?: SortOrder
     name?: SortOrder
     avatarUrl?: SortOrder
+    encryptedGithubToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -10265,6 +10293,7 @@ export namespace Prisma {
     githubId: number
     name?: string | null
     avatarUrl?: string | null
+    encryptedGithubToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -10276,6 +10305,7 @@ export namespace Prisma {
     githubId: number
     name?: string | null
     avatarUrl?: string | null
+    encryptedGithubToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -10332,6 +10362,7 @@ export namespace Prisma {
     githubId?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptedGithubToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10343,6 +10374,7 @@ export namespace Prisma {
     githubId?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    encryptedGithubToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
