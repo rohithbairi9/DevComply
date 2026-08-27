@@ -83443,7 +83443,7 @@ exports.AuthModule = void 0;
 const common_1 = __webpack_require__(10);
 const jwt_1 = __webpack_require__(1157);
 const auth_service_1 = __webpack_require__(1240);
-const auth_controller_1 = __webpack_require__(1241);
+const auth_controller_1 = __webpack_require__(1242);
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -89927,7 +89927,7 @@ exports.AuthService = void 0;
 const common_1 = __webpack_require__(10);
 const jwt_1 = __webpack_require__(1157);
 const prisma_service_1 = __webpack_require__(1148);
-const crypto_util_1 = __webpack_require__(1796);
+const crypto_util_1 = __webpack_require__(1241);
 let AuthService = AuthService_1 = class AuthService {
     constructor(prisma, jwtService) {
         this.prisma = prisma;
@@ -90019,67 +90019,80 @@ exports.AuthService = AuthService = AuthService_1 = __decorate([
 
 "use strict";
 
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a, _b, _c, _d;
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AuthController = void 0;
-const common_1 = __webpack_require__(10);
-const express_1 = __webpack_require__(1009);
-const auth_service_1 = __webpack_require__(1240);
-const github_auth_dto_1 = __webpack_require__(1242);
-let AuthController = class AuthController {
-    constructor(authService) {
-        this.authService = authService;
+exports.encrypt = encrypt;
+exports.decrypt = decrypt;
+const crypto = __importStar(__webpack_require__(833));
+const ALGORITHM = 'aes-256-gcm';
+const IV_LENGTH = 16;
+const TAG_LENGTH = 16;
+function getKey() {
+    const key = process.env.ENCRYPTION_KEY;
+    if (!key || key.length !== 64) {
+        throw new Error('ENCRYPTION_KEY must be a 64-character hex string (32 bytes)');
     }
-    async githubLogin(dto, res) {
-        if (!dto.code)
-            throw new common_1.BadRequestException('Code is required');
-        const { jwtToken, user } = await this.authService.authenticateWithGithub(dto.code);
-        // Set HttpOnly cookie
-        res.cookie('token', jwtToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-        });
-        return { message: 'Authentication successful', user };
+    return Buffer.from(key, 'hex');
+}
+function encrypt(text) {
+    const iv = crypto.randomBytes(IV_LENGTH);
+    const cipher = crypto.createCipheriv(ALGORITHM, getKey(), iv);
+    const encrypted = Buffer.concat([
+        cipher.update(text, 'utf8'),
+        cipher.final(),
+    ]);
+    const tag = cipher.getAuthTag();
+    // Format: iv:tag:encryptedData (all hex)
+    return `${iv.toString('hex')}:${tag.toString('hex')}:${encrypted.toString('hex')}`;
+}
+function decrypt(encryptedText) {
+    const parts = encryptedText.split(':');
+    if (parts.length !== 3) {
+        throw new Error('Invalid encrypted text format');
     }
-    async logout(res) {
-        res.clearCookie('token');
-        return { message: 'Logged out successfully' };
-    }
-};
-exports.AuthController = AuthController;
-__decorate([
-    (0, common_1.Post)('github'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Res)({ passthrough: true })),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_b = typeof github_auth_dto_1.GithubAuthDto !== "undefined" && github_auth_dto_1.GithubAuthDto) === "function" ? _b : Object, typeof (_c = typeof express_1.Response !== "undefined" && express_1.Response) === "function" ? _c : Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "githubLogin", null);
-__decorate([
-    (0, common_1.Post)('logout'),
-    __param(0, (0, common_1.Res)({ passthrough: true })),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_d = typeof express_1.Response !== "undefined" && express_1.Response) === "function" ? _d : Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "logout", null);
-exports.AuthController = AuthController = __decorate([
-    (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [typeof (_a = typeof auth_service_1.AuthService !== "undefined" && auth_service_1.AuthService) === "function" ? _a : Object])
-], AuthController);
+    const iv = Buffer.from(parts[0], 'hex');
+    const tag = Buffer.from(parts[1], 'hex');
+    const encrypted = Buffer.from(parts[2], 'hex');
+    const decipher = crypto.createDecipheriv(ALGORITHM, getKey(), iv);
+    decipher.setAuthTag(tag);
+    const decrypted = Buffer.concat([
+        decipher.update(encrypted),
+        decipher.final(),
+    ]);
+    return decrypted.toString('utf8');
+}
 
 
 /***/ }),
@@ -90097,17 +90110,59 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GithubAuthDto = void 0;
-const class_validator_1 = __webpack_require__(164);
-class GithubAuthDto {
-}
-exports.GithubAuthDto = GithubAuthDto;
+exports.AuthController = void 0;
+const common_1 = __webpack_require__(10);
+const express_1 = __webpack_require__(1009);
+const auth_service_1 = __webpack_require__(1240);
+let AuthController = class AuthController {
+    constructor(authService) {
+        this.authService = authService;
+    }
+    async githubCallback(code, res) {
+        if (!code)
+            throw new common_1.BadRequestException('Code is required');
+        const { jwtToken } = await this.authService.authenticateWithGithub(code);
+        // Set HttpOnly cookie on the Backend domain (Render)
+        res.cookie('token', jwtToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Must be true
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Must be 'none' in production
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        });
+        // Redirect to the Frontend's cookie-setter route, passing the token
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        return res.redirect(`${frontendUrl}/api/auth/set-token?token=${jwtToken}`);
+    }
+    async logout(res) {
+        res.clearCookie('token');
+        return { message: 'Logged out successfully' };
+    }
+};
+exports.AuthController = AuthController;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], GithubAuthDto.prototype, "code", void 0);
+    (0, common_1.Get)('github/callback'),
+    __param(0, (0, common_1.Query)('code')),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_b = typeof express_1.Response !== "undefined" && express_1.Response) === "function" ? _b : Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "githubCallback", null);
+__decorate([
+    (0, common_1.Post)('logout'),
+    __param(0, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_c = typeof express_1.Response !== "undefined" && express_1.Response) === "function" ? _c : Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
+exports.AuthController = AuthController = __decorate([
+    (0, common_1.Controller)('auth'),
+    __metadata("design:paramtypes", [typeof (_a = typeof auth_service_1.AuthService !== "undefined" && auth_service_1.AuthService) === "function" ? _a : Object])
+], AuthController);
 
 
 /***/ }),
@@ -135653,7 +135708,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ScansService = void 0;
 const common_1 = __webpack_require__(10);
 const prisma_service_1 = __webpack_require__(1148);
-const crypto_util_1 = __webpack_require__(1796);
+const crypto_util_1 = __webpack_require__(1241);
 let ScansService = ScansService_1 = class ScansService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -184883,88 +184938,6 @@ exports.unsign = function(val, secret){
 
 function sha1(str){
   return crypto.createHash('sha1').update(str).digest('hex');
-}
-
-
-/***/ }),
-/* 1796 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.encrypt = encrypt;
-exports.decrypt = decrypt;
-const crypto = __importStar(__webpack_require__(833));
-const ALGORITHM = 'aes-256-gcm';
-const IV_LENGTH = 16;
-const TAG_LENGTH = 16;
-function getKey() {
-    const key = process.env.ENCRYPTION_KEY;
-    if (!key || key.length !== 64) {
-        throw new Error('ENCRYPTION_KEY must be a 64-character hex string (32 bytes)');
-    }
-    return Buffer.from(key, 'hex');
-}
-function encrypt(text) {
-    const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv(ALGORITHM, getKey(), iv);
-    const encrypted = Buffer.concat([
-        cipher.update(text, 'utf8'),
-        cipher.final(),
-    ]);
-    const tag = cipher.getAuthTag();
-    // Format: iv:tag:encryptedData (all hex)
-    return `${iv.toString('hex')}:${tag.toString('hex')}:${encrypted.toString('hex')}`;
-}
-function decrypt(encryptedText) {
-    const parts = encryptedText.split(':');
-    if (parts.length !== 3) {
-        throw new Error('Invalid encrypted text format');
-    }
-    const iv = Buffer.from(parts[0], 'hex');
-    const tag = Buffer.from(parts[1], 'hex');
-    const encrypted = Buffer.from(parts[2], 'hex');
-    const decipher = crypto.createDecipheriv(ALGORITHM, getKey(), iv);
-    decipher.setAuthTag(tag);
-    const decrypted = Buffer.concat([
-        decipher.update(encrypted),
-        decipher.final(),
-    ]);
-    return decrypted.toString('utf8');
 }
 
 

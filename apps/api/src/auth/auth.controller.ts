@@ -23,9 +23,9 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
 
-    // Redirect back to the Vercel Frontend Dashboard
+    // Redirect to the Frontend's cookie-setter route, passing the token
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    return res.redirect(`${frontendUrl}/dashboard`);
+    return res.redirect(`${frontendUrl}/api/auth/set-token?token=${jwtToken}`);
   }
 
   @Post('logout')
